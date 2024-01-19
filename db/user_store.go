@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
 //repo-service
 
 const userCollection = "users"
@@ -17,6 +18,8 @@ type UserStore interface {
 	GetUserByID(context.Context, string) (*types.User, error)
 	GetUsers(context.Context) ([]*types.User, error)
 	CreateUser(context.Context, *types.User) (*types.User, error)
+	DeleteUser(context.Context, string) error
+	UpdateUser(ctx context.Context, filter bson.M, params types.UpdateUserParams) error
 }
 
 //struct for mongodb store
@@ -67,4 +70,35 @@ func (s *MongouserStore) CreateUser(ctx context.Context, user *types.User) (*typ
 	}
 	user.ID = res.InsertedID.(primitive.ObjectID)
 	return user, nil
+}
+
+func (s *MongouserStore) DeleteUser(ctx context.Context, id string) error{
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err !=nil {
+		return err 
+	}
+	// TODO: it's good to handle if delete didn't delete any user
+	// maybe log it or something?
+
+	_, err = s.coll.DeleteOne(ctx, bson.M{"_id": oid})
+	if err!=nil{
+		return err
+	}
+	return nil
+}
+
+func (s *MongouserStore) UpdateUser(ctx context.Context, filter bson.M, params types.UpdateUserParams) error{
+	//values := bson.M{} //bson.M is a map
+	values := params.ToBSON()
+	update := bson.D{
+		{
+			"$set", values,
+		},
+	}
+	
+	_, err := s.coll.UpdateOne(ctx, filter, update)
+	if err !=nil {
+		return err 
+	}
+	return nil
 }

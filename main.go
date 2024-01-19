@@ -32,6 +32,7 @@ func main() {
 	if err!=nil{
 		log.Fatal(err)
 	}
+
 	// handlers initialiazation
 	userHandler := api.NewUserHandler(db.NewMongoUserStore(client))
 
@@ -41,7 +42,10 @@ func main() {
 	apiv1.Post("/user", userHandler.HandlePostUser)
 	apiv1.Get("/users", userHandler.HandleGetUsers)
 	apiv1.Get("/user/:id", userHandler.HandleGetUser)
+	apiv1.Put("user/:id", userHandler.HandlePutUser)
+	apiv1.Delete("/user/:id", userHandler.HandleDeleteUser)
 
+	//this needs to be at the end
 	app.Listen(*listenAddr)
 
 }

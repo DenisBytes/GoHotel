@@ -1,9 +1,14 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/DenisBytes/GoHotel/db"
 	"github.com/DenisBytes/GoHotel/types"
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // handlers = return functions of paths
@@ -33,8 +38,12 @@ func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 	id := c.Params("id")	
 	user, err := h.userStore.GetUserByID(c.Context(), id)
 	if err!= nil{
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return c.JSON(map[string]string{"error": "not found"})
+		}
 		return err
 	}
+	
 	return c.JSON(user)
 }
 
@@ -56,4 +65,34 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error{
 		return err
 	}
 	return c.JSON(insertedUser)
+}
+
+func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error{
+	var (
+		//values bson.M
+		params types.UpdateUserParams
+		userID = c.Params("id")
+	)
+	if err := c.BodyParser(&params); err!=nil{
+		return err
+	}
+
+	oid, err := primitive.ObjectIDFromHex(userID)
+	if err !=nil {
+		return err 
+	}
+	filter:= bson.M{"_id": oid}
+	
+	if err:= h.userStore.UpdateUser(c.Context(), filter, params); err!=nil{
+		return err
+	}
+	return c.JSON(map[string]string{"updated": userID})
+}
+
+func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error{
+	userID := c.Params("id")
+	if err := h.userStore.DeleteUser(c.Context(), userID); err!=nil{
+		return err
+	}
+	return c.JSON(map[string]string{"deleted": userID})
 }
