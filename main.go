@@ -34,7 +34,7 @@ func main() {
 	}
 
 	// handlers initialiazation
-	userHandler := api.NewUserHandler(db.NewMongoUserStore(client))
+	userHandler := api.NewUserHandler(db.NewMongoUserStore(client, dbname))
 
 	app := fiber.New(config)
 	// this is like requestmapping in spring above the controller class. to create a prefixed path.
