@@ -34,7 +34,7 @@ func setUp(t *testing.T) *testdb{
 		log.Fatal(err)
 	}
 	return &testdb{
-		UserStore: db.NewMongoUserStore(client, dbname),
+		UserStore: db.NewMongoUserStore(client),
 	}
 }
 func TestPostUser(t *testing.T){
@@ -45,6 +45,7 @@ func TestPostUser(t *testing.T){
 	userHandler := NewUserHandler(tdb.UserStore)
 	app.Post("/", userHandler.HandlePostUser)
 
+	//Testing post method
 	params := types.CreateUserParams{
 		Email: "some@foo.com",
 		FirstName: "James",
@@ -83,4 +84,6 @@ func TestPostUser(t *testing.T){
 	if user.Email != params.Email{
 		t.Logf("Expected Email %s but got %s\n", user.Email, params.Email)
 	}
+
+	
 }
