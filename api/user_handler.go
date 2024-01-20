@@ -11,10 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// handlers = return functions of paths
-
+// handlers = controllers
 type UserHandler struct{
-	userStore db.UserStore //not mongoStore because you may have to access multiple dbs
+	userStore db.UserStore //implements the interface (store) not the struct (MongoStore or PostgresStore)
 }
 
 //Constructor for handler
@@ -24,7 +23,7 @@ func NewUserHandler(userStore db.UserStore) *UserHandler{
 	}
 }
 
-// Methods. various handlers functions
+// Methods
 func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 	users, err := h.userStore.GetUsers(c.Context())
 	if err!=nil{

@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// INTERFACE FOR DB
 type HotelStore interface {
 	CreateHotel(context.Context, *types.Hotel) (*types.Hotel, error)
 	UpdateHotel(context.Context, bson.M, bson.M) error
@@ -16,6 +17,7 @@ type HotelStore interface {
 	GetHotelByID(context.Context, primitive.ObjectID) (*types.Hotel, error)
 }
 
+// CLASS AND CONSTRUCTOR
 type MongoHotelStore struct {
 	client *mongo.Client
 	coll *mongo.Collection
@@ -27,6 +29,8 @@ func NewMongoHotelStore (client *mongo.Client) *MongoHotelStore{
 		coll: client.Database(DBNAME).Collection("hotels"),
 	}
 }
+
+// METHODS
 
 func (s *MongoHotelStore) CreateHotel(ctx context.Context, hotel *types.Hotel) (*types.Hotel, error){
 	resp, err := s.coll.InsertOne(ctx, hotel)

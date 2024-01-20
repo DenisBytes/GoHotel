@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// CLASS AND CONSTRUCTOR
 type HotelHandler struct {
 	store *db.Store
 }
@@ -17,6 +18,8 @@ func NewHotelHandler(store *db.Store) *HotelHandler{
 		store: store,
 	}
 }
+
+//METHODS
 
 
 func (h *HotelHandler) HandleGetHotels (c *fiber.Ctx) error{

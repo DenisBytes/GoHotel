@@ -9,11 +9,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// INTERFACE
+
 type RoomStore interface {
 	CreateRoom(context.Context, *types.Room) (*types.Room, error)
 	GetRooms(context.Context, bson.M) ([]*types.Room, error)
 }
 
+// CLASS AND CONSTRUCTOR
 type MongoRoomStore struct {
 	client *mongo.Client
 	coll *mongo.Collection
@@ -28,6 +31,8 @@ func NewMongoRoomStore (client *mongo.Client, hotelStore HotelStore) *MongoRoomS
 		HotelStore: hotelStore,
 	}
 }
+
+// METHODS
 
 func (s *MongoRoomStore) CreateRoom(ctx context.Context, room *types.Room) (*types.Room, error){
 	resp, err := s.coll.InsertOne(ctx, room)

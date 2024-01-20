@@ -31,7 +31,7 @@ func (tdb *testdb) teardown(t *testing.T){
 func setUp(t *testing.T) *testdb{
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dburi))
 	if err!=nil{
-		log.Fatal(err)
+		log.Fatal(err)	
 	}
 	return &testdb{
 		UserStore: db.NewMongoUserStore(client),
