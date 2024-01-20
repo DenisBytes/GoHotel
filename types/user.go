@@ -62,7 +62,7 @@ func (params CreateUserParams) Validate() map[string]string{
 		errors["lastName"] = fmt.Sprintf("Last name should be at least %d characters", minLastNameLen)
 	}
 	if len(params.Password) < minPasswordLen{
-		errors["password"] = fmt.Sprintf("Pssword should be at least %d characters", minPasswordLen)
+		errors["password"] = fmt.Sprintf("Password should be at least %d characters", minPasswordLen)
 	}
 	if !isEmailValid(params.Email){
 		errors["email"] = fmt.Sprintf("Email is invalid")
@@ -74,6 +74,10 @@ func isEmailValid(e string) bool {
 	// not very good regexo. is by-passable
     emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
     return emailRegex.MatchString(e)
+}
+
+func IsValidPassword(encpw, pw string) bool{
+	return bcrypt.CompareHashAndPassword([]byte(encpw), []byte(pw)) == nil
 }
 
 func (p *UpdateUserParams) ToBSON() bson.M{
