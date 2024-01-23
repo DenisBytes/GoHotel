@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const dburi = "mongodb://localhost:27017"
+const testdburi = "mongodb://localhost:27017"
 const dbname = "go-hotel"
 
 type testdb struct {
@@ -29,7 +29,7 @@ func (tdb *testdb) teardown(t *testing.T){
 }
 
 func setUp(t *testing.T) *testdb{
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dburi))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(testdburi))
 	if err!=nil{
 		log.Fatal(err)	
 	}
