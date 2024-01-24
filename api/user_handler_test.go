@@ -16,7 +16,6 @@ import (
 )
 
 const testdburi = "mongodb://localhost:27017"
-const dbname = "go-hotel"
 
 type testdb struct {
 	db.UserStore

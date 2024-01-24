@@ -35,7 +35,8 @@ func insertTestUser(t *testing.T, userStore db.UserStore) *types.User {
 func TestAuthenticateWithWrongPassword(t *testing.T) {
 	tdb := setUp(t)
 	defer tdb.teardown(t)
-	insertTestUser(t, tdb.UserStore)
+	insertedUser := insertTestUser(t, tdb.UserStore)
+	fmt.Println(insertedUser)
 
 	app := fiber.New()
 	authHandler := NewAuthHandler(tdb.UserStore)
@@ -45,7 +46,6 @@ func TestAuthenticateWithWrongPassword(t *testing.T) {
 		Email:    "james@foo.com",
 		Password: "supersecurepasswordnotcorrect",
 	}
-
 	b, _ := json.Marshal(params)
 	req := httptest.NewRequest("POST", "/auth", bytes.NewReader(b))
 	req.Header.Add("Content-Type", "application/json")
@@ -53,11 +53,9 @@ func TestAuthenticateWithWrongPassword(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(resp)
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Fatalf("expected http status of 400 but got %d", resp.StatusCode)
 	}
-
 	var genResp genericResp
 	if err := json.NewDecoder(resp.Body).Decode(&genResp); err != nil {
 		t.Fatal(err)

@@ -61,13 +61,13 @@ func (h *AuthHandler) HandleAuthenticate(c *fiber.Ctx) error{
 	user, err := h.userStore.GetUserByEmail(c.Context(), params.Email)
 	if err!=nil{
 		if errors.Is(err, mongo.ErrNoDocuments){
-			return fmt.Errorf("Invalid credentials")
+			return invalidCredentials(c)
 		}
 		return err
 	}
 
 	if !types.IsValidPassword(user.EncryptedPassword, params.Password){
-		return fmt.Errorf("Invalid credentials")
+		return invalidCredentials(c)
 	}
 
 	resp := AuthResponse{
