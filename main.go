@@ -35,17 +35,20 @@ func main() {
 		hotelStore = db.NewMongoHotelStore(client)
 		roomStore = db.NewMongoRoomStore(client, hotelStore)
 		userStore = db.NewMongoUserStore(client)
+		bookingStore = db.NewMongoBookingStore(client)
 		store = &db.Store{
 			Hotel: hotelStore,
 			Room: roomStore,
 			User: userStore,
+			Booking: bookingStore,
 		}
 		userHandler = api.NewUserHandler(userStore)
 		hotelHandler = api.NewHotelHandler(store)
 		authHandler = api.NewAuthHandler(userStore)
+		roomHandler = api.NewRoomHandler(store)
 		app = fiber.New(config)
 		// this is like requestmapping in spring above the controller class. to create a prefixed path.
-		apiv1 = app.Group("/api/v1", middleware.JWTAuthentication)
+		apiv1 = app.Group("/api/v1", middleware.JWTAuthentication(userStore))
 		auth = app.Group("/api")
 	)
 
@@ -63,7 +66,10 @@ func main() {
 	//hotel handlers
 	apiv1.Get("/hotels", hotelHandler.HandleGetHotels)
 	apiv1.Get("/hotel/:id", hotelHandler.HandleGetHotel)
-	apiv1.Get("/hotel/:id/rooms", hotelHandler.HandleGetRooms	)
+	apiv1.Get("/hotel/:id/rooms", hotelHandler.HandleGetRooms)
+
+	apiv1.Get("/rooms", roomHandler.HandleGetRooms)
+	apiv1.Post("/room/:id/book", roomHandler.HandleBookRoom)
 
 	//this needs to be at the end
 	app.Listen(*listenAddr)

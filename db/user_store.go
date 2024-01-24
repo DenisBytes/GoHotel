@@ -121,4 +121,4 @@ func (s *MongoUserStore) UpdateUser(ctx context.Context, filter bson.M, params t
 func (s *MongoUserStore) Drop(ctx context.Context) error{
 	fmt.Println("--- dropping user collection")
 	return s.coll.Drop(ctx)
-}
+}   

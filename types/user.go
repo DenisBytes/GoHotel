@@ -80,7 +80,7 @@ func IsValidPassword(encpw, pw string) bool{
 	return bcrypt.CompareHashAndPassword([]byte(encpw), []byte(pw)) == nil
 }
 
-func (p *UpdateUserParams) ToBSON() bson.M{
+func (p UpdateUserParams) ToBSON() bson.M{
 	m := bson.M{}
 	if len(p.FirstName) > 0{
 		m["firstName"] = p.FirstName

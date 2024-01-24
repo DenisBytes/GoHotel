@@ -35,8 +35,7 @@ func insertTestUser(t *testing.T, userStore db.UserStore) *types.User {
 func TestAuthenticateWithWrongPassword(t *testing.T) {
 	tdb := setUp(t)
 	defer tdb.teardown(t)
-	insertedUser := insertTestUser(t, tdb.UserStore)
-	fmt.Println(insertedUser)
+	insertTestUser(t, tdb.UserStore)
 
 	app := fiber.New()
 	authHandler := NewAuthHandler(tdb.UserStore)
