@@ -46,6 +46,7 @@ func main() {
 		hotelHandler = api.NewHotelHandler(store)
 		authHandler = api.NewAuthHandler(userStore)
 		roomHandler = api.NewRoomHandler(store)
+		bookingHandler = api.NewBookingHandler(store)
 		app = fiber.New(config)
 		// this is like requestmapping in spring above the controller class. to create a prefixed path.
 		apiv1 = app.Group("/api/v1", middleware.JWTAuthentication(userStore))
@@ -68,8 +69,12 @@ func main() {
 	apiv1.Get("/hotel/:id", hotelHandler.HandleGetHotel)
 	apiv1.Get("/hotel/:id/rooms", hotelHandler.HandleGetRooms)
 
+	//rrìoom handlers
 	apiv1.Get("/rooms", roomHandler.HandleGetRooms)
 	apiv1.Post("/room/:id/book", roomHandler.HandleBookRoom)
+
+	apiv1.Get("/bookings", bookingHandler.HandleGetBookings )
+	apiv1.Get("/booking/:id", bookingHandler.HandleGetBooking)
 
 	//this needs to be at the end
 	app.Listen(*listenAddr)
