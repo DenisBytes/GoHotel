@@ -37,6 +37,9 @@ func JWTAuthentication(userStore db.UserStore) fiber.Handler{
 			return fmt.Errorf("unauthorized")
 		}
 
+		//TODO: this does not work with thunder/postman. 
+		//I have to put in the header manually the token eveytime.
+		// Maybe in production works?
 		// Set the current authenticated user to the context
 		c.Context().SetUserValue("user", user)
 

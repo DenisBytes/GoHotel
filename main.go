@@ -57,7 +57,6 @@ func main() {
 	//Auth handlers
 	auth.Post("/auth", authHandler.HandleAuthenticate)
 
-
 	//user handlers
 	apiv1.Post("/user", userHandler.HandlePostUser)
 	apiv1.Get("/users", userHandler.HandleGetUsers)
@@ -76,6 +75,7 @@ func main() {
 
 	admin.Get("/bookings", bookingHandler.HandleGetBookings)
 	apiv1.Get("/booking/:id", bookingHandler.HandleGetBooking)
+	apiv1.Get("/booking/:id/cancel", bookingHandler.HandleCancelBooking)
 
 	//this needs to be at the end
 	app.Listen(*listenAddr)

@@ -68,12 +68,18 @@ func (h *AuthHandler) HandleAuthenticate(c *fiber.Ctx) error{
 
 	if !types.IsValidPassword(user.EncryptedPassword, params.Password){
 		return invalidCredentials(c)
-	}
+	}	
+
+	token := CreateTokenFromUser(user)
 
 	resp := AuthResponse{
 		User: user,
-		Token: CreateTokenFromUser(user),
+		Token: token,
 	}
+
+	//TODO: when using thunder/
+	// Set the X-API-TOKEN header in the response
+	c.Set("X-API-TOKEN", token)
 
 	return c.JSON(resp)
 }
