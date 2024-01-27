@@ -20,10 +20,10 @@ func TestPostUser(t *testing.T){
 
 	//Testing post method
 	params := types.CreateUserParams{
-		Email: "some@foo.com",
-		FirstName: "James",
-		LastName: "Foo",
-		Password: "akbfahjbf",
+		Email: "james@foo.com",
+		FirstName: "james",
+		LastName: "foo",
+		Password: "james_foo",
 	}
 	//Marshal the params to bytes
 	b,_ := json.Marshal(params)
