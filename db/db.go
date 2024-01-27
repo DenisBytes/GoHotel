@@ -12,3 +12,7 @@ type Store struct{
 	Room RoomStore
 	Booking BookingStore
 }
+
+//this is to make the interface implementable for both mongo and sql.
+//BSON == map[string] any      under the hood
+type Map map[string]any

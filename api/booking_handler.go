@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/DenisBytes/GoHotel/db"
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type BookingHandler struct {
@@ -17,7 +16,7 @@ func NewBookingHandler(store *db.Store) *BookingHandler{
 }
 
 func (h *BookingHandler) HandleGetBookings(c *fiber.Ctx) error{
-	bookings, err := h.store.Booking.GetBookings(c.Context(), bson.M{})
+	bookings, err := h.store.Booking.GetBookings(c.Context(), db.Map{})
 	if err != nil {
 		return ErrResourceNotFound("bookings")
 	}
@@ -57,7 +56,7 @@ func (h *BookingHandler) HandleCancelBooking(c *fiber.Ctx) error {
 	if booking.UserID != user.ID {
 		return ErrUnauthorized()
 	}
-	if err :=  h.store.Booking.UpdateBooking(c.Context(), id, bson.M{"canceled": true}); err != nil {
+	if err :=  h.store.Booking.UpdateBooking(c.Context(), id, db.Map{"canceled": true}); err != nil {
 		return err
 	}
 

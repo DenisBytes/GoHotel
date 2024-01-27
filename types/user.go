@@ -17,15 +17,15 @@ const (
 )
 
 type User struct {
-	//BSON: It is a binary representation of JSON-like documents, designed to be efficient for storage and data interchange.
-	ID                primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"` // to omit value on respond/render. if omit only the empty = omitempty. if always omit ? json:"-"
-	FirstName         string `bson:"firstName" json:"firstName"`
-	LastName          string `bson:"lastName" json:"lastName"`
-	Email             string `bson:"email" json:"email"`
+	ID primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"` // to omit value on respond/render. if omit only the empty = omitempty. if always omit ? json:"-"
+	FirstName string `bson:"firstName" json:"firstName"`
+	LastName string `bson:"lastName" json:"lastName"`
+	Email string `bson:"email" json:"email"`
 	EncryptedPassword string `bson:"encryptedPassword" json:"-"`
 	IsAdmin bool `bson:"isAdmin" json:"isAdmin"`
 }
 
+//DTO
 type CreateUserParams struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
@@ -33,11 +33,14 @@ type CreateUserParams struct {
 	Password  string `json:"password"`
 }
 
+//DTO
 type UpdateUserParams struct{
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 }
 
+
+//DTO Constructor
 func NewUserFromParams(params CreateUserParams) (*User, error) {
 	encpw, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcryptCost)
 	if err!= nil{

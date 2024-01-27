@@ -93,7 +93,7 @@ func (h *RoomHandler) HandleBookRoom (c *fiber.Ctx) error{
 
 func (h *RoomHandler) isRoomAvailableForBooking(ctx context.Context ,roomID primitive.ObjectID, params BookRoomParams ) (bool, error){
 
-	where := bson.M{
+	where := db.Map{
         "roomID": roomID,
         "$or": []bson.M{
             // Check if the existing booking starts during the new booking period
@@ -121,7 +121,7 @@ func (h *RoomHandler) isRoomAvailableForBooking(ctx context.Context ,roomID prim
 }
 
 func (h *RoomHandler) HandleGetRooms(c *fiber.Ctx) error {
-	rooms, err := h.store.Room.GetRooms(c.Context(), bson.M{})
+	rooms, err := h.store.Room.GetRooms(c.Context(), db.Map{})
 	if err != nil {
 		return err
 	}

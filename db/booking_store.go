@@ -11,9 +11,9 @@ import (
 
 type BookingStore interface {
 	CreateBooking(context.Context, *types.Booking) (*types.Booking, error)
-	GetBookings(context.Context, bson.M) ([]*types.Booking, error)
+	GetBookings(context.Context, Map) ([]*types.Booking, error)
 	GetBookingByID(context.Context, string) (*types.Booking, error)
-	UpdateBooking(context.Context, string, bson.M) error
+	UpdateBooking(context.Context, string, Map) error
 }
 
 type MongoBookingStore struct{
@@ -42,7 +42,7 @@ func (s *MongoBookingStore) CreateBooking(ctx context.Context, booking *types.Bo
 	return booking, nil
 }
 
-func (s *MongoBookingStore) GetBookings(ctx context.Context, filter bson.M) ([]*types.Booking, error) {
+func (s *MongoBookingStore) GetBookings(ctx context.Context, filter Map) ([]*types.Booking, error) {
 	cur, err := s.coll.Find(ctx, filter)
 	if err != nil {
 		return nil ,err
@@ -72,7 +72,7 @@ func (s *MongoBookingStore) GetBookingByID(ctx context.Context, id string) (*typ
 }
 
 
-func (s *MongoBookingStore) UpdateBooking(ctx context.Context, id string, update bson.M) (error){
+func (s *MongoBookingStore) UpdateBooking(ctx context.Context, id string, update Map) (error){
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err !=nil {
 		return err
