@@ -16,3 +16,9 @@ type Store struct{
 //this is to make the interface implementable for both mongo and sql.
 //BSON == map[string] any      under the hood
 type Map map[string]any
+
+
+type Pagination struct {
+	Page int64
+	Limit int64
+}

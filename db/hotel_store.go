@@ -7,13 +7,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // INTERFACE FOR DB
 type HotelStore interface {
 	CreateHotel(context.Context, *types.Hotel) (*types.Hotel, error)
 	UpdateHotel(context.Context, Map, Map) error
-	GetHotels(context.Context, Map) ([]*types.Hotel, error)
+	GetHotels(context.Context, Map, *Pagination) ([]*types.Hotel, error)
 	GetHotelByID(context.Context, string) (*types.Hotel, error)
 }
 
@@ -41,8 +42,11 @@ func (s *MongoHotelStore) CreateHotel(ctx context.Context, hotel *types.Hotel) (
 	return hotel, nil
 }
 
-func (s *MongoHotelStore) GetHotels(ctx context.Context,filter Map) ([]*types.Hotel, error){
-	resp, err := s.coll.Find(ctx, filter)
+func (s *MongoHotelStore) GetHotels(ctx context.Context,filter Map, pagFilter *Pagination ) ([]*types.Hotel, error){
+	opts := options.FindOptions{}
+	opts.SetSkip((pagFilter.Page -1)  * pagFilter.Limit)
+	opts.SetLimit(pagFilter.Limit)
+	resp, err := s.coll.Find(ctx, filter, &opts)
 	if err!=nil{
 		return nil, err
 	}
