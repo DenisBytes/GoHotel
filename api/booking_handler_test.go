@@ -79,7 +79,7 @@ func TestUserGetBookingByID(t *testing.T){
 		hotel = fixtures.AddHotel(db.Store, "Bar Hotel", "italy", 4, nil)
 		room = fixtures.AddRoom(db.Store, "small", true, 2, hotel.ID)
 		booking = fixtures.AddBooking(db.Store, user.ID, room.ID, time.Now(), time.Now().AddDate(0,0,2))
-		app = fiber.New()
+		app = fiber.New(fiber.Config{ErrorHandler: ErrorHandler})
 		route = app.Group("/", JWTAuthentication(db.User))
 		bookingHandler = NewBookingHandler(db.Store)
 	)
