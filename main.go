@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log"
+	"os"
 
 	"github.com/DenisBytes/GoHotel/api"
 	"github.com/DenisBytes/GoHotel/db"
@@ -18,11 +18,7 @@ var config = fiber.Config{
 }
 
 func main() {
-	// this is a flag for command. name of flag - default value - description
-	listenAddr := flag.String("listenAddr", ":5000", "The listen address of the API server")
-	flag.Parse()
-
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURL))
 	if err!=nil{
 		log.Fatal(err)
 	}
@@ -74,7 +70,7 @@ func main() {
 	apiv1.Get("/booking/:id", bookingHandler.HandleGetBooking)
 	apiv1.Get("/booking/:id/cancel", bookingHandler.HandleCancelBooking)
 
+	listenAddr := os.Getenv("HTTP_LISTEN_ADDRESS")
 	//this needs to be at the end
-	app.Listen(*listenAddr)
-
+	app.Listen(listenAddr)
 }

@@ -1,24 +1,41 @@
 package db
 
-const (
-	DBNAME = "go-hotel"
-	TestDBNAME = "go-hotel-test"
-	DBURI = "mongodb://localhost:27017"
+import (
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-type Store struct{
-	User UserStore
-	Hotel HotelStore
-	Room RoomStore
+var (
+	DBNAME string
+	DBURL string
+)
+
+func init() {
+	// use  ("../.env") for tests. in other location files it can't read the .env file
+	// if err := godotenv.Load("../.env"); err != nil {
+	if err := godotenv.Load("../.env"); err != nil {
+		log.Fatal(err)
+	}
+	DBNAME = os.Getenv("MONGO_DB_NAME")
+	DBURL = os.Getenv("MONGO_DB_URL")
+}
+
+type Store struct {
+	User    UserStore
+	Hotel   HotelStore
+	Room    RoomStore
 	Booking BookingStore
 }
 
-//this is to make the interface implementable for both mongo and sql.
-//BSON == map[string] any      under the hood
+// this is to make the interface implementable for both mongo and sql.
+// BSON == map[string] any      under the hood
 type Map map[string]any
 
-
 type Pagination struct {
-	Page int64
+	Page  int64
 	Limit int64
 }
+
+
