@@ -27,7 +27,7 @@ func NewUserHandler(userStore db.UserStore) *UserHandler{
 func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 	users, err := h.userStore.GetUsers(c.Context())
 	if err!=nil{
-		return err
+		return ErrResourceNotFound("user")
 	}
 	//c.JSON is going to automatically marshal/convert your user into JSON
 	return c.JSON(users)
@@ -50,7 +50,7 @@ func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error{
 	var params types.CreateUserParams
 	if err:= c.BodyParser(&params); err!=nil{
-		return err
+		return ErrBadRequest()
 	}
 	if errors := params.Validate(); len(errors) > 0 {
 		return c.JSON(errors)
@@ -73,12 +73,12 @@ func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error{
 		userID = c.Params("id")
 	)
 	if err := c.BodyParser(&params); err!=nil{
-		return err
+		return ErrBadRequest()
 	}
 
 	oid, err := primitive.ObjectIDFromHex(userID)
 	if err !=nil {
-		return err 
+		return ErrInvalidID()
 	}
 	filter:= bson.M{"_id": oid}
 	

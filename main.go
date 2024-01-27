@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/DenisBytes/GoHotel/api"
-	"github.com/DenisBytes/GoHotel/api/middleware"
 	"github.com/DenisBytes/GoHotel/db"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,9 +14,7 @@ import (
 
 // when something errs, it going to return a json with key "err:" and the value the actual error
 var config = fiber.Config{
-	ErrorHandler: func (c *fiber.Ctx, err error) error{
-		return c.JSON(map[string]string{"error": err.Error()})
-	},
+	ErrorHandler: api.ErrorHandler,
 }
 
 func main() {
@@ -48,9 +45,9 @@ func main() {
 		roomHandler = api.NewRoomHandler(store)
 		bookingHandler = api.NewBookingHandler(store)
 		app = fiber.New(config)
-		apiv1 = app.Group("/api/v1", middleware.JWTAuthentication(userStore))
+		apiv1 = app.Group("/api/v1", api.JWTAuthentication(userStore))
 		// we use apiv1 and not app becuase jwt is included in apiv1 and in app no
-		admin = apiv1.Group("/admin", middleware.AdminAuth)
+		admin = apiv1.Group("/admin", api.AdminAuth)
 		auth = app.Group("/api")
 	)
 
